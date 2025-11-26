@@ -1,7 +1,5 @@
 from dpm.downloader import WebResource
 from dpm.pkg_definition import Aspect, BasePackageRecipe
-
-
 from dpm.types import Needs
 
 
@@ -10,7 +8,13 @@ class PackageRecipe(BasePackageRecipe):
         super().__init__(store, name)
 
     def needs(self) -> list[Needs]:
-        return [Needs("cc"), Needs("base"), Needs("python")]
+        return [
+            Needs("cc"),
+            Needs("base"),
+            Needs("python"),
+            Needs("openssl"),
+            Needs("cmake"),
+        ]
 
     def aspects(self) -> list[Aspect]:
         return [Aspect.CONTAINS_BINARIES, Aspect.CONTAINS_PKG_CONFIG]
@@ -27,10 +31,7 @@ class PackageRecipe(BasePackageRecipe):
         pass
 
     def create(self):
-        self.configure(
-            "../libevent-2.1.12-stable/",
-            [],
-        )
+        self.store.resolve(Needs("cmake")).cmake(self, "../libevent-2.1.12-stable/", [])
         self.make()
 
     def install(self):
