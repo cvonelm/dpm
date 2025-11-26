@@ -1,12 +1,14 @@
 from __future__ import annotations
-import shutil
+
 import importlib
-import pathlib
-import dpm.solver
 import json
-import dpm.helpers
-from dpm.types import Needs, Provides
+import pathlib
+import shutil
 from typing import TYPE_CHECKING
+
+import dpm.helpers
+import dpm.solver
+from dpm.types import Needs, Provides
 
 if TYPE_CHECKING:
     from dpm.pkg_definition import BasePackageRecipe
@@ -16,7 +18,7 @@ from dpm.types import Package
 
 class Store:
     def __init__(self, path: str):
-        self.path = pathlib.Path(path)
+        self.path = pathlib.Path(path).absolute()
         if not self.path.is_dir():
             print("Store", self.path, " does not exists yet, creating")
             self.path.mkdir()

@@ -1,7 +1,8 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
+
 import os
 import subprocess
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from dpm.store import Store
@@ -23,9 +24,9 @@ class Environment:
     def register_package(self, need: Needs):
         pkg_recipe = self.store.resolve_tree(need)
         pkg_recipe.pkg.env_hook(self)
-        self.PATH.append(str(pkg_recipe.pkg.prefix / "bin"))
+        self.PATH.append(str((pkg_recipe.pkg.prefix / "bin").absolute()))
         for dep in pkg_recipe.children:
-            self.PATH.append(str(dep.pkg.prefix / "bin"))
+            self.PATH.append(str((dep.pkg.prefix / "bin").absolute()))
             dep.pkg.env_hook(self)
             dep.pkg.env_hook_deps(dep.pkg, self)
         for dep in pkg_recipe.flatten():
