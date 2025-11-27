@@ -31,6 +31,14 @@ parser_uninstall.add_argument("STORE")
 parser_uninstall.add_argument("PKG")
 parser_uninstall.add_argument("--repo", default="")
 
+parser_reinstall = subparsers.add_parser("reinstall")
+parser_reinstall.add_argument("-r", "--required", action="append")
+parser_reinstall.add_argument("-f", "--forbidden", action="append")
+parser_reinstall.add_argument("--repo", default="")
+parser_reinstall.add_argument("STORE")
+parser_reinstall.add_argument("PKG")
+
+
 parser_stored = subparsers.add_parser("stored")
 
 parser_stored.add_argument("STORE")
@@ -56,6 +64,14 @@ if args.subparser_name == "uninstall":
     store = dpm.store.Store(args.STORE, args.repo)
     store.uninstall(Provides(args.PKG))
     sys.exit(1)
+
+if args.subparser_name == "reinstall":
+    required_variants = args.required
+    forbidden_variants = args.forbidden
+    store = dpm.store.Store(args.STORE, args.repo)
+    store.uninstall(Provides(args.PKG))
+    store.install(Needs(args.PKG, required_variants, forbidden_variants))
+    sys.exit(0)
 
 if args.subparser_name == "stored":
     store = dpm.store.Store(args.STORE)
