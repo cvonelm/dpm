@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -22,9 +23,6 @@ class Provides:
 
     def __str__(self):
         return f"Provides: {self.name}"
-
-    def as_package(self) -> "Package":
-        return Package(self.name)
 
     def as_needs(self) -> Needs:
         return Needs(self.name)
@@ -126,8 +124,9 @@ class PackageNode:
 
 
 class Package:
-    def __init__(self, pkg: str):
+    def __init__(self, pkg: str, repo: Path = Path()):
         self.pkg = pkg
+        self.repo = repo
 
     def __eq__(self, other) -> bool:
         if not isinstance(other, Package):
