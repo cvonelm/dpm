@@ -60,9 +60,7 @@ class Store:
                 print(f"{r.name} +{r.required_variants} -{r.forbidden_variants}")
 
     def get_package_mod(self, pkg):
-        logger.debug(
-            f"Loading package module for {pkg.pkg} from {self.repo / pkg.pkg}"
-        )
+        logger.debug(f"Loading package module for {pkg.pkg} from {self.repo / pkg.pkg}")
         spec = importlib.util.spec_from_file_location(
             "dpm.repo." + pkg.pkg, self.repo / pkg.pkg / "__init__.py"
         )
