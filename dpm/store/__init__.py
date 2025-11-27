@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-import importlib
+import importlib.util
 import json
+import logging
 import pathlib
 import shutil
 from typing import TYPE_CHECKING
@@ -15,25 +16,33 @@ if TYPE_CHECKING:
 
 from dpm.types import Package
 
+logger = logging.getLogger("dpm")
+
 
 class Store:
-    def __init__(self, path: str):
+    def __init__(self, path: str, repo: str = ""):
         self.path = pathlib.Path(path).absolute()
         if not self.path.is_dir():
             print("Store", self.path, " does not exists yet, creating")
             self.path.mkdir()
+
+        if repo:
+            logger.info(f"Using repo {repo}")
+            self.repo = pathlib.Path(repo).absolute()
+        else:
+            logger.info(f"Using default repo")
+            self.repo = pathlib.Path(__file__).parent.parent.resolve() / "repo"
         self._solver: dpm.solver.Solver = dpm.solver.Solver(self)
 
     def get_installed_packages(self) -> list[Package]:
-        return [Package(file.name) for file in self.path.iterdir() if file.is_dir()]
+        return [
+            Package(file.name, self.repo)
+            for file in self.path.iterdir()
+            if file.is_dir()
+        ]
 
     def get_all_packages(self) -> list[Package]:
-        return [
-            Package(file.name)
-            for file in (
-                pathlib.Path(__file__).parent.parent.resolve() / "repo"
-            ).iterdir()
-        ]
+        return [Package(file.name, self.repo) for file in (self.repo).iterdir()]
 
     def is_installed(self, pkg: Package) -> bool:
         return (self.path / pkg.pkg).is_dir()
@@ -50,11 +59,26 @@ class Store:
             else:
                 print(f"{r.name} +{r.required_variants} -{r.forbidden_variants}")
 
+    def get_package_mod(self, pkg):
+        logger.debug(
+            f"Loading package module for {pkg.pkg} from {self.repo / pkg.pkg}"
+        )
+        spec = importlib.util.spec_from_file_location(
+            "dpm.repo." + pkg.pkg, self.repo / pkg.pkg / "__init__.py"
+        )
+        logger.debug(f"Spec info {spec}")
+        if spec:
+            package_mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(package_mod)
+        else:
+            raise RuntimeError(f"Failed to load spec for {pkg.pkg}")
+        return package_mod
+
     def get_recipe(self, pkg: Package) -> BasePackageRecipe:
         if self.is_installed(pkg):
             try:
                 spec_file = (self.path / f"{pkg.pkg}.spec").open("r")
-                package_mod = importlib.import_module("dpm.repo." + pkg.pkg)
+                package_mod = self.get_package_mod(pkg)
                 r = package_mod.PackageRecipe(self, pkg.pkg)
                 spec = json.load(spec_file)
                 for v in spec["required_variants"]:
@@ -67,7 +91,7 @@ class Store:
                 if dpm.helpers.yes_no():
                     shutil.rmtree(self.path / pkg.pkg)
 
-        package_mod = importlib.import_module("dpm.repo." + pkg.pkg)
+        package_mod = self.get_package_mod(pkg)
         return package_mod.PackageRecipe(self, pkg.pkg)
 
     def resolve(self, need: Needs) -> BasePackageRecipe:
