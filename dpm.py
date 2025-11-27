@@ -22,8 +22,8 @@ parser_install = subparsers.add_parser("install")
 
 parser_install.add_argument("-r", "--required", action="append")
 parser_install.add_argument("-f", "--forbidden", action="append")
+parser_install.add_argument("--repo", default="")
 parser_install.add_argument("STORE")
-parser_install.add_argument("REPO")
 parser_install.add_argument("PKG")
 
 parser_uninstall = subparsers.add_parser("uninstall")
@@ -48,7 +48,7 @@ if args.verbose:
 if args.subparser_name == "install":
     required_variants = args.required
     forbidden_variants = args.forbidden
-    store = dpm.store.Store(args.STORE, args.REPO)
+    store = dpm.store.Store(args.STORE, args.repo)
     store.install(Needs(args.PKG, required_variants, forbidden_variants))
     sys.exit(0)
 
