@@ -9,13 +9,6 @@ class File(Resource):
         self.filename: str = filename
 
     def download(self) -> None:
-        res_path = (
-            pathlib.Path(__file__).parent
-            / ".."
-            / "repo"
-            / self.pkg.name
-            / "misc"
-            / self.filename
-        )
+        res_path = self.pkg.repo / self.pkg.name / "misc" / self.filename
 
         self.pkg.tmpdir_execute(["cp", res_path, "."])
