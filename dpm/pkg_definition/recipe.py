@@ -1,17 +1,18 @@
 from __future__ import annotations
+
+import json
+import logging
+import pathlib
 import shutil
 import subprocess
-import pathlib
 import uuid
-import logging
-import json
-
 from typing import TYPE_CHECKING
 
-from .environment import Environment
-from .aspect import Aspect
-from dpm.types import Needs, Forbids, Provides, Package
 from dpm.downloader import Resource
+from dpm.types import Forbids, Needs, Package, Provides
+
+from .aspect import Aspect
+from .environment import Environment
 
 if TYPE_CHECKING:
     from store import Store
@@ -151,7 +152,7 @@ class BasePackageRecipe:
         self.tmpdir_execute(make_cmd, subdir=path)
 
     def to_store(self) -> None:
-        if self.store.is_installed(Package(self.name)):
+        if self.store.is_installed(Package(self.name, self.store.repo)):
             return
         self.required_variants = self.required_variants.union(self.default_variants)
         self.forbidden_variants = self.forbidden_variants.union(self.optional_variants)

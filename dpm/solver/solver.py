@@ -85,7 +85,7 @@ class Solver:
             self.providers[provide] = [
                 candidate
                 for candidate in provides
-                if candidate != Package(forbids.name)
+                if candidate != Package(forbids.name, self.store.repo)
             ]
 
             # Mark provide class as delete if it is now empty

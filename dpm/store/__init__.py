@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-import importlib
 import json
+import logging
 import pathlib
 import shutil
 from typing import TYPE_CHECKING
 
 import dpm.helpers
+import dpm.repo
 import dpm.solver
 from dpm.types import Needs, Provides
 
@@ -15,25 +16,27 @@ if TYPE_CHECKING:
 
 from dpm.types import Package
 
+logger = logging.getLogger("dpm")
+
 
 class Store:
-    def __init__(self, path: str):
+    def __init__(self, path: str, repo: str = ""):
         self.path = pathlib.Path(path).absolute()
         if not self.path.is_dir():
             print("Store", self.path, " does not exists yet, creating")
             self.path.mkdir()
+        self.repo = dpm.repo.Repo(repo)
         self._solver: dpm.solver.Solver = dpm.solver.Solver(self)
 
     def get_installed_packages(self) -> list[Package]:
-        return [Package(file.name) for file in self.path.iterdir() if file.is_dir()]
+        return [
+            Package(file.name, self.repo)  # TODO get the repo from the spec file
+            for file in self.path.iterdir()
+            if file.is_dir()
+        ]
 
     def get_all_packages(self) -> list[Package]:
-        return [
-            Package(file.name)
-            for file in (
-                pathlib.Path(__file__).parent.parent.resolve() / "repo"
-            ).iterdir()
-        ]
+        return self.repo.get_all_packages()
 
     def is_installed(self, pkg: Package) -> bool:
         return (self.path / pkg.pkg).is_dir()
@@ -54,7 +57,7 @@ class Store:
         if self.is_installed(pkg):
             try:
                 spec_file = (self.path / f"{pkg.pkg}.spec").open("r")
-                package_mod = importlib.import_module("dpm.repo." + pkg.pkg)
+                package_mod = self.repo.get_package_mod(pkg)
                 r = package_mod.PackageRecipe(self, pkg.pkg)
                 spec = json.load(spec_file)
                 for v in spec["required_variants"]:
@@ -67,7 +70,7 @@ class Store:
                 if dpm.helpers.yes_no():
                     shutil.rmtree(self.path / pkg.pkg)
 
-        package_mod = importlib.import_module("dpm.repo." + pkg.pkg)
+        package_mod = self.repo.get_package_mod(pkg)
         return package_mod.PackageRecipe(self, pkg.pkg)
 
     def resolve(self, need: Needs) -> BasePackageRecipe:
@@ -82,7 +85,7 @@ class Store:
         node.print()
         for recipe in node.flatten():
             recipe.to_store()
-            self._solver.mark_fixed(Package(recipe.name))
+            self._solver.mark_fixed(Package(recipe.name, self.repo))
 
     def uninstall(self, provide: Provides, recursive=False) -> None:
         uninst_recipe = self._solver.resolve(provide.as_needs())
