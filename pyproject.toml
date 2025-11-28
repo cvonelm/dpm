@@ -15,4 +15,7 @@ maintainers = [
 ]
 
 [project.scripts]
-cli-name = "dpm:main"
+dpm = "dpm:main"
+
+[tool.setuptools.packages.find]
+include = ["dpm*"]
