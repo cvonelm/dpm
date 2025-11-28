@@ -23,7 +23,7 @@ class PackageRecipe(BasePackageRecipe):
             Needs("otf2"),
             Needs("elfutils"),
             Needs("libbpf"),
-            Needs("clang_cc"),
+            Needs("bpf_clang_cc"),
         ]
 
     def aspects(self) -> list[Aspect]:
