@@ -42,7 +42,11 @@ class Store:
         ]
 
     def get_all_packages(self) -> list[Package]:
-        return [Package(file.name, self.repo) for file in (self.repo).iterdir()]
+        return [
+            Package(file.name, self.repo)
+            for file in (self.repo).iterdir()
+            if not file.name.startswith(".")
+        ]
 
     def is_installed(self, pkg: Package) -> bool:
         return (self.path / pkg.pkg).is_dir()
