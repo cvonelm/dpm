@@ -18,6 +18,9 @@ class CCWrapperPackageRecipe(WrapperPackageRecipe):
     def cxx_compiler_path(self) -> pathlib.Path:
         return self.prefix / "bin" / self.cxx
 
+    def library_path(self) -> pathlib.Path:
+        raise RuntimeError("Need to define compiler libraries!")
+
     def env_hook(self, env):
         env.env["CC"] = str(self.c_compiler_path())
         env.env["CXX"] = str(self.cxx_compiler_path())
