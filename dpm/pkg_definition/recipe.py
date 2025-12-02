@@ -130,17 +130,23 @@ class BasePackageRecipe:
     def configure(self, configure_srcdir: str, configure_opt: list[str], inplace=False):
         if inplace:
             self.tmpdir_execute(
-                ["./configure", "--prefix=" + str(self.prefix)],
+                [
+                    "./configure",
+                    "--prefix=" + str(self.prefix),
+                ],
                 subdir=configure_srcdir,
             )
         else:
             self.tmpdir_execute(
-                [configure_srcdir + "/configure", "--prefix=" + str(self.prefix)]
+                [
+                    configure_srcdir + "/configure",
+                    "--prefix=" + str(self.prefix),
+                ]
                 + configure_opt,
                 subdir="build",
             )
 
-    def make(self, target="", args=None, path="build") -> None:
+    def make(self, target="", args: list[str] | None = None, path="build") -> None:
         make_cmd = ["make"]
         if target != "":
             make_cmd.append(target)
