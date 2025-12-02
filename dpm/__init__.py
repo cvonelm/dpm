@@ -29,6 +29,7 @@ def main():
 
     parser_uninstall.add_argument("STORE")
     parser_uninstall.add_argument("PKG")
+    parser_uninstall.add_argument("--repo", default="")
 
     parser_reinstall = subparsers.add_parser("reinstall")
     parser_reinstall.add_argument("-r", "--required", action="append")
@@ -59,7 +60,7 @@ def main():
         sys.exit(0)
 
     if args.subparser_name == "uninstall":
-        store = dpm.store.Store(args.STORE)
+        store = dpm.store.Store(args.STORE, args.repo)
         store.uninstall(Provides(args.PKG))
         sys.exit(1)
 
