@@ -1,5 +1,3 @@
-import pathlib
-
 from .resource import Resource
 
 
