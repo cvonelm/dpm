@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dpm"
+version = "0.0.1"
+dependencies = []
+authors = [
+  {name = "Andreas Gocht-Zech", email = "andreas.gocht-zech@sva.de"},
+  {name = "Christian von Elm", email = "cvonelm@cvonelm.de"},
+]
+maintainers = [
+  {name = "Christian von Elm", email = "cvonelm@cvonelm.de"}
+]
+
+[project.scripts]
+cli-name = "dpm:main"
