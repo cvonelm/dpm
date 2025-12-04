@@ -3,6 +3,8 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+import dpm.repo
+
 if TYPE_CHECKING:
     from dpm.pkg_definition import BasePackageRecipe
 
@@ -124,7 +126,7 @@ class PackageNode:
 
 
 class Package:
-    def __init__(self, pkg: str, repo: Path = Path()):
+    def __init__(self, pkg: str, repo: dpm.repo.Repo):
         self.pkg = pkg
         self.repo = repo
 
