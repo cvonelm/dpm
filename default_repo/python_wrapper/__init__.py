@@ -1,5 +1,4 @@
 from dpm.pkg_definition import WrapperPackageRecipe
-
 from dpm.types import Provides
 
 
