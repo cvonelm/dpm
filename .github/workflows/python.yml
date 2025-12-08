@@ -1,0 +1,21 @@
+name: Build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Install dependencies
+        run: pip install ruff
+      - uses: actions/checkout@v2
+      - name: ruff format
+        run: ruff format --check
+      - name: ruff check
+        run: ruff check
