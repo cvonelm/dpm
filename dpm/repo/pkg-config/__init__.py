@@ -19,7 +19,7 @@ class PackageRecipe(BasePackageRecipe):
         return [
             WebResource(
                 self,
-                "https://distfiles.ariadne.space/pkgconf/pkgconf-2.5.1.tar.xz",
+                "https://distfiles.dereferenced.org/pkgconf/pkgconf-2.5.1.tar.gz",
             ),
         ]
 
