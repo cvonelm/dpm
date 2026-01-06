@@ -8,6 +8,42 @@ import dpm.store
 from dpm.types import Needs, Provides
 
 
+def parser_add_install(subparsers):
+    parser = subparsers.add_parser("install")
+    parser.add_argument("-r", "--required", action="append")
+    parser.add_argument("-f", "--forbidden", action="append")
+    parser.add_argument("--repo", default="")
+    parser.add_argument("STORE")
+    parser.add_argument("PKG")
+
+
+def parser_add_uninstall(subparsers):
+    parser = subparsers.add_parser("uninstall")
+    parser.add_argument("STORE")
+    parser.add_argument("PKG")
+    parser.add_argument("--repo", default="")
+
+
+def parser_add_reinstall(subparsers):
+    parser = subparsers.add_parser("reinstall")
+    parser.add_argument("-r", "--required", action="append")
+    parser.add_argument("-f", "--forbidden", action="append")
+    parser.add_argument("--repo", default="")
+    parser.add_argument("STORE")
+    parser.add_argument("PKG")
+
+
+def parser_add_stored(subparsers):
+    parser = subparsers.add_parser("stored")
+    parser.add_argument("STORE")
+
+
+def parser_add_shell(subparsers):
+    parser = subparsers.add_parser("shell")
+    parser.add_argument("STORE")
+    parser.add_argument("PKG", nargs="*", action="append")
+
+
 def main():
     parser = argparse.ArgumentParser(
         prog="DPM",
@@ -17,38 +53,14 @@ def main():
     parser.add_argument("-v", "--verbose", action="store_true")
 
     subparsers = parser.add_subparsers(dest="subparser_name")
-    parser_install = subparsers.add_parser("install")
+    parser_add_install(subparsers)
+    parser_add_uninstall(subparsers)
+    parser_add_reinstall(subparsers)
+    parser_add_stored(subparsers)
+    parser_add_shell(subparsers)
 
-    parser_install.add_argument("-r", "--required", action="append")
-    parser_install.add_argument("-f", "--forbidden", action="append")
-    parser_install.add_argument("--repo", default="")
-    parser_install.add_argument("STORE")
-    parser_install.add_argument("PKG")
-
-    parser_uninstall = subparsers.add_parser("uninstall")
-
-    parser_uninstall.add_argument("STORE")
-    parser_uninstall.add_argument("PKG")
-    parser_uninstall.add_argument("--repo", default="")
-
-    parser_reinstall = subparsers.add_parser("reinstall")
-    parser_reinstall.add_argument("-r", "--required", action="append")
-    parser_reinstall.add_argument("-f", "--forbidden", action="append")
-    parser_reinstall.add_argument("--repo", default="")
-    parser_reinstall.add_argument("STORE")
-    parser_reinstall.add_argument("PKG")
-
-    parser_stored = subparsers.add_parser("stored")
-
-    parser_stored.add_argument("STORE")
-
-    parser_shell = subparsers.add_parser("shell")
-
-    parser_shell.add_argument("STORE")
-    parser_shell.add_argument("PKG", nargs="*", action="append")
     args = parser.parse_args()
 
-    logger = logging.getLogger("dpm")
     if args.verbose:
         print("Setting verbose!")
         logging.basicConfig(level=logging.INFO)
