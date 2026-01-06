@@ -2,10 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import dpm.repo
-
 if TYPE_CHECKING:
     from dpm.pkg_definition import BasePackageRecipe
+    from dpm.repo import Repo
 
 
 class Provides:
@@ -125,7 +124,7 @@ class PackageNode:
 
 
 class Package:
-    def __init__(self, pkg: str, repo: dpm.repo.Repo):
+    def __init__(self, pkg: str, repo: Repo):
         self.pkg = pkg
         self.repo = repo
 
