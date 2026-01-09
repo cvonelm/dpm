@@ -22,6 +22,7 @@ class PackageRecipe(BasePackageRecipe):
             Needs("base"),
             Needs("otf2"),
             Needs("elfutils"),
+            Needs("python"),
             Needs("libbpf"),
             Needs("bpf_clang_cc"),
         ]
