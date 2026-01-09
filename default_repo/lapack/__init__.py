@@ -27,7 +27,10 @@ class PackageRecipe(BasePackageRecipe):
 
     def create(self):
         self.store.resolve(Needs("cmake")).cmake(
-            self, "../lapack-3.12.1", ["-DCBLAS=ON"]
+            self,
+            "../lapack-3.12.1",
+            ["-DBUILD_SHARED_LIBS=ON", "-DCBLAS=ON"],
+            build_static=False,
         )
         self.make()
 

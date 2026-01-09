@@ -10,15 +10,16 @@ class PackageRecipe(WrapperPackageRecipe):
     def provides(self) -> list[Provides]:
         return [Provides("cmake")]
 
-    def cmake(self, pkg, cmake_srcdir: str, cmake_opt: list[str]):
+    def cmake(self, pkg, cmake_srcdir: str, cmake_opt: list[str], build_static=True):
         if "CC" in pkg.env.env:
             cmake_opt.append("-DCMAKE_C_COMPILER=" + pkg.env.env["CC"])
             cmake_opt.append("-DCMAKE_CXX_COMPILER=" + pkg.env.env["CXX"])
         if "FC" in pkg.env.env:
             cmake_opt.append("-DCMAKE_Fortran_COMPILER=" + pkg.env.env["FC"])
 
-        cmake_opt.append("-DCMAKE_POSITION_INDEPENDENT_CODE=ON")
-        cmake_opt.append("-DBUILD_SHARED_LIBS=OFF")
+        if build_static:
+            cmake_opt.append("-DCMAKE_POSITION_INDEPENDENT_CODE=ON")
+            cmake_opt.append("-DBUILD_SHARED_LIBS=OFF")
 
         pkg_tree = self.store.resolve_tree(Needs(pkg.name))
 
