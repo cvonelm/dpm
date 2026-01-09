@@ -34,7 +34,7 @@ class PackageRecipe(BasePackageRecipe):
             Git(
                 self,
                 "https://github.com/tud-zih-energy/lo2s",
-                "97fc6c620bd9c902c0545adb5f1a2d72e46c2983",
+                "882786142d4eb7434a50f1db15718020691c3491",
             ),
         ]
 
