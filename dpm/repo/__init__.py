@@ -24,7 +24,7 @@ class Repo:
         return [Package(file.name, self) for file in (self.uri).iterdir()]
 
     def get_package_mod(self, pkg):
-        logger.warn(f"Loading package module for {pkg.pkg} from {self.uri / pkg.pkg}")
+        logger.debug(f"Loading package module for {pkg.pkg} from {self.uri / pkg.pkg}")
         spec = importlib.util.spec_from_file_location(
             "dpm.repo." + pkg.pkg, self.uri / pkg.pkg / "__init__.py"
         )
