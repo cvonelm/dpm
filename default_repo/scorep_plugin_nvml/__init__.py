@@ -26,8 +26,8 @@ class PackageRecipe(BasePackageRecipe):
         return [
             Git(
                 self,
-                "https://github.com/cvonelm/scorep_plugin_nvml",
-                "7ccaa6b53337989db52f7f5216fbc33f9bbb4cdb",
+                "https://github.com/score-p/scorep_plugin_nvml",
+                "8d0affc32291d64139ea0e81e2a348ee9c127452",
             ),
         ]
 
