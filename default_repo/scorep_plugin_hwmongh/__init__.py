@@ -26,7 +26,7 @@ class PackageRecipe(BasePackageRecipe):
             Git(
                 self,
                 "https://github.com/cvonelm/scorep_plugin_hwmongh.git",
-                "29f8bede149d261eb7d5afd0d31266d773045738",
+                "e8fce6dfb622cce3861a067b6c8fcc6ed161c4e0",
             ),
         ]
 
