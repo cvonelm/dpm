@@ -1,6 +1,5 @@
 from dpm.downloader import WebResource
 from dpm.pkg_definition import Aspect, BasePackageRecipe
-
 from dpm.types import Needs, Provides
 
 
@@ -49,9 +48,13 @@ class PackageRecipe(BasePackageRecipe):
         return [Provides("cmake")]
 
     def create(self):
+        compiler = self.store.resolve(Needs("tool_cc"))
+
         self.configure(
             "../cmake-4.0.3/",
-            [],
+            [
+                f"LDFLAGS=-L{compiler.library_path()} -Wl,-rpath,{compiler.library_path()}",
+            ],
         )
         self.make()
 
